@@ -30,7 +30,7 @@ def hData (d) :
 			byteString = '0' + byteString
 		hexData += byteString + ' '
 		columnNum += 1
-		if columnNum == 16 :
+		if columnNum == 32 :
 			hexData +=  '\n'
 			columnNum = 0
 	#print hexData + '\n'
@@ -44,7 +44,7 @@ def rawData (d):
 		rawByte = str(d[i])
 		rawData += rawByte
 		columnNum += 1
-		if columnNum == 16 :
+		if columnNum == 32 :
 			rawData +=  '\n'
 			columnNum = 0
 	#print rawData + '\n'
@@ -81,11 +81,13 @@ while True:
 		#now unpack them :)
 		iph = unpack('!BBHHHBBH4s4s' , ip_header)
 		version_ihl = iph[0]
-		version = version_ihl
-		ihl = version_ihl + 0xf #'&' # 0xF
-		#print ihl
+		version = version_ihl >> 4
+		ihl = version_ihl & 0xf #'&' # 0xF
+		#print str(version_ihl)
+		#print str(version)
+		#print str(ihl)
 		iph_length = ihl * 4
-		#print iph_length
+		#print str(iph_length)
 		ttl = iph[5]
 		protocol = iph[6]
 		s_addr = socket.inet_ntoa(iph[8]);
@@ -93,17 +95,21 @@ while True:
 		#print s_addr, d_addr
 		if d_addr == '127.0.0.1':
 			print 'Destination MAC : ' + str(eth_addr(packet[0:6])) + ' Source MAC : ' + str(eth_addr(packet[6:12])) + ' Protocol : ' + str(eth_protocol)
-			print 'Version : ' + str(version) + ' IP Header Length : ' + str(ihl) + ' TTL : ' + str(ttl) + ' Protocol : ' + str(protocol) + ' Source Address : ' + str(s_addr) + ' Destination Address : ' + str(d_addr)
+			print 'Version : ' + str(version) + ' IP Header Length : ' + str(ihl) + ' TTL : ' + str(ttl) + ' Protocol : ' + str(protocol) 
+			print ' Source Address : ' + str(s_addr) + ' Destination Address : ' + str(d_addr)
 			
 			#TCP protocol
 			if protocol == 6 :
 				t = iph_length + eth_length
 				tcp_header = packet[t:t+20]
-				print len(packet[0:]
+				#print 'len packet: ' + str(len(packet[0:]))
 				#print str(packet[0:])
-				print
-				print len(tcp_header)
-				print
+				#print 'len t: ' + str(t)
+				#print 'iph_length: ' + str(iph_length)
+				#print 'eth_length: ' + str(eth_length)
+				#print
+				#print 'len tcp_header: ' + str(len(tcp_header))
+				#print
 				#now unpack them :)
 				if len(tcp_header) == 20 :
 					tcph = unpack('!HHLLBBHHH' , tcp_header)
@@ -113,16 +119,18 @@ while True:
 					sequence = tcph[2]
 					acknowledgement = tcph[3]
 					doff_reserved = tcph[4]
-					tcph_length = doff_reserved #'>> 4'
-					print 'Source Port : ' + str(source_port) + ' Dest Port : ' + str(dest_port) + ' Sequence Number : ' + str(sequence) + ' Acknowledgement : ' + str(acknowledgement) + ' TCP header length : ' + str(tcph_length)
+					tcph_length = doff_reserved >> 4
+					print 'Source Port : ' + str(source_port) + ' Dest Port : ' + str(dest_port)
+					print ' Sequence Number : ' + str(sequence) + ' Acknowledgement : ' + str(acknowledgement) + ' TCP header length : ' + str(tcph_length)
 					h_size = eth_length + iph_length + tcph_length * 4
 					data_size = len(packet) - h_size
 
 					#get data from the packet
 					data = packet[h_size:]
-					print "hello???"
+					#print "hello???"
+					#TODO if len(data) != 0 print stuff
 					print 'Data : '  + hData(data) + rawData(data)	
-					print lent(data)
+					print len(data)
 					
 					#break
 
