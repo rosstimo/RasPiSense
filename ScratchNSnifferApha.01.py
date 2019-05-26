@@ -57,6 +57,8 @@ try:
 	s = socket.socket( socket.AF_PACKET , socket.SOCK_RAW , socket.ntohs(0x0003))
 except socket.error , msg:
 	print 'Socket could not be created. Error Code : ' + str(msg[0]) + ' Message ' + msg[1]
+	if msg[1] == 'Operation not permitted':
+		print 'Be sure you run as root'
 	sys.exit()
 
 # receive a packet
@@ -178,5 +180,5 @@ while True:
 			else :
 				print str(protocol) + ' Protocol other than TCP/UDP/ICMP'
 				
-			print
+			#print
 			
