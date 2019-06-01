@@ -92,8 +92,8 @@ while True:
 		s_addr = socket.inet_ntoa(iph[8]);
 		d_addr = socket.inet_ntoa(iph[9]);
 		#print s_addr, d_addr
-		if d_addr == '127.0.0.1':
-		#if True:
+		#if d_addr == '127.0.0.1':
+		if True:
 			#print 'Destination MAC : ' + str(eth_addr(packet[0:6])) + ' Source MAC : ' + str(eth_addr(packet[6:12])) + ' Protocol : ' + str(eth_protocol)
 			#print 'Version : ' + str(version) + ' IP Header Length : ' + str(ihl) + ' TTL : ' + str(ttl) + ' Protocol : ' + str(protocol) 
 			#print ' Source Address : ' + str(s_addr) + ' Destination Address : ' + str(d_addr)
@@ -105,7 +105,6 @@ while True:
 				#now unpack them :)
 				if len(tcp_header) == 20 :
 					tcph = unpack('!HHLLBBHHH' , tcp_header)
-
 					source_port = tcph[0]
 					dest_port = tcph[1]
 					sequence = tcph[2]
@@ -116,22 +115,21 @@ while True:
 					#print ' Sequence Number : ' + str(sequence) + ' Acknowledgement : ' + str(acknowledgement) + ' TCP header length : ' + str(tcph_length)
 					h_size = eth_length + iph_length + tcph_length * 4
 					data_size = len(packet) - h_size
-
 					#get data from the packet
 					data = packet[h_size:]
-					#TODO if len(data) != 0 print stuff
-					if len(data) > 0 :#and (dest_port == 8888 or dest_port == 42001 or dest_port == 42002):
-						print '*******************************'
-						print 'Destination MAC : ' + str(eth_addr(packet[0:6])) + ' Source MAC : ' + str(eth_addr(packet[6:12])) + ' Protocol : ' + str(eth_protocol)
-						print 'Version : ' + str(version) + ' IP Header Length : ' + str(ihl) + ' TTL : ' + str(ttl) + ' Protocol : ' + str(protocol) 
-						print 'Source Address : ' + str(s_addr) + ' Destination Address : ' + str(d_addr)
-						print 'Source Port : ' + str(source_port) + ' Dest Port : ' + str(dest_port)
-						print 'Sequence Number : ' + str(sequence) + ' Acknowledgement : ' + str(acknowledgement) + ' TCP header length : ' + str(tcph_length)
-						print 'Data: '  
-						print 'Hex: ' + hData(data) 
-						print 'Raw: ' + rawData(data)	
-						print 'Number of Bytes: ' + str(len(data))
-						print '*******************************'
+					if len(data) > 0 : 
+						if dest_port == 8888 or dest_port == 42001 or dest_port == 42002 or source_port == 8888 or source_port == 42001 or source_port == 42002:
+							print '***********TCP protocol********************'
+							print 'Destination MAC : ' + str(eth_addr(packet[0:6])) + ' Source MAC : ' + str(eth_addr(packet[6:12])) + ' Protocol : ' + str(eth_protocol)
+							print 'Version : ' + str(version) + ' IP Header Length : ' + str(ihl) + ' TTL : ' + str(ttl) + ' Protocol : ' + str(protocol) 
+							print 'Source Address : ' + str(s_addr) + ' Destination Address : ' + str(d_addr)
+							print 'Source Port : ' + str(source_port) + ' Dest Port : ' + str(dest_port)
+							print 'Sequence Number : ' + str(sequence) + ' Acknowledgement : ' + str(acknowledgement) + ' TCP header length : ' + str(tcph_length)
+							print 'Data: '  
+							print 'Hex: ' + hData(data) 
+							print 'Raw: ' + rawData(data)	
+							print 'Number of Bytes: ' + str(len(data))
+							print '*******************************'
 					#break
 
 			#ICMP Packets
@@ -141,21 +139,25 @@ while True:
 				icmp_header = packet[u:u+4]
 				#now unpack them :)
 				icmph = unpack('!BBH' , icmp_header)
-
 				icmp_type = icmph[0]
 				code = icmph[1]
 				checksum = icmph[2]
-
-				print 'Type : ' + str(icmp_type) + ' Code : ' + str(code) + ' Checksum : ' + str(checksum)
-
 				h_size = eth_length + iph_length + icmph_length
 				data_size = len(packet) - h_size
-
 				#get data from the packet
 				data = packet[h_size:]
-
-				print 'Data : ' + hData(data) + rawData(data)	
-
+				'''if len(data) > 0 : and dest_port == 42001 : #or dest_port == 42001 or dest_port == 42002):
+					print '***************ICMP Packet****************'
+					print 'Destination MAC : ' + str(eth_addr(packet[0:6])) + ' Source MAC : ' + str(eth_addr(packet[6:12])) + ' Protocol : ' + str(eth_protocol)
+					print 'Version : ' + str(version) + ' IP Header Length : ' + str(ihl) + ' TTL : ' + str(ttl) + ' Protocol : ' + str(protocol) 
+					print 'Source Address : ' + str(s_addr) + ' Destination Address : ' + str(d_addr)
+					print 'Type : ' + str(icmp_type) + ' Code : ' + str(code) + ' Checksum : ' + str(checksum)
+					print 'Data: '  
+					print 'Hex: ' + hData(data) 
+					print 'Raw: ' + rawData(data)	
+					print 'Number of Bytes: ' + str(len(data))
+					print '*******************************'
+'''
 			#UDP packets
 			elif protocol == 17 :
 				u = iph_length + eth_length
@@ -168,17 +170,22 @@ while True:
 					dest_port = udph[1]
 					length = udph[2]
 					checksum = udph[3]
-
-					print 'Source Port : ' + str(source_port) + ' Dest Port : ' + str(dest_port) + ' Length : ' + str(length) + ' Checksum : ' + str(checksum)
-
 					h_size = eth_length + iph_length + udph_length
 					data_size = len(packet) - h_size
-
 					#get data from the packet
 					data = packet[h_size:]
-
-					print 'Data : ' + hData(data) + rawData(data)	
-
+					'''if len(data) > 0 : and (dest_port == 8888 or dest_port == 42001 or dest_port == 42002):
+						print '***************UDP packet****************'
+						print 'Destination MAC : ' + str(eth_addr(packet[0:6])) + ' Source MAC : ' + str(eth_addr(packet[6:12])) + ' Protocol : ' + str(eth_protocol)
+						print 'Version : ' + str(version) + ' IP Header Length : ' + str(ihl) + ' TTL : ' + str(ttl) + ' Protocol : ' + str(protocol) 
+						print 'Source Address : ' + str(s_addr) + ' Destination Address : ' + str(d_addr)
+						print 'Source Port : ' + str(source_port) + ' Dest Port : ' + str(dest_port) + ' Length : ' + str(length) + ' Checksum : ' + str(checksum)
+						print 'Data: '  
+						print 'Hex: ' + hData(data) 
+						print 'Raw: ' + rawData(data)	
+						print 'Number of Bytes: ' + str(len(data))
+						print '*******************************'
+'''
 			#some other IP packet like IGMP
 			else :
 				print str(protocol) + ' Protocol other than TCP/UDP/ICMP'
