@@ -8,13 +8,15 @@ class dummy():
 		self.command = command
 		self.pins = pins
 		self.interval = interval
+		#self.value = value()
 
 	def get(self):
 		return random.randint(0,100)
-		
+		#self.value() = random.randint(0,100)
+
 	def value(self):
 		'''get sensor value from IO interface'''
-		pass
+		return random.randint(0,100)
 	
 	def continuous(self,interval):
 		'''Send data continuously until stop command recieved'''
@@ -28,15 +30,24 @@ class dummy():
 		'''Reset interface to default or safe state'''
 		pass
 	
-def fakeValue():
+#def fakeValue():
 	'''Return fake random value'''
-	pins = (4, 7)
-	d = dummy(pins)
-	print(d.get(), d.pins[0])
+command = 'get'
+pins = (4, 7)
+interval = 0
+d = dummy(command, pins, interval)
+
+	#print(d.get(), d.pins[0])
+	
+	
 
 
 print(__name__)
 
 if __name__ == '__main__' :
-	fakeValue()
-print(help(dummy))
+
+	print('command is ' + str(d.command))
+	print('pin 0 is ' + str(d.pins[0]))
+	print('interval is ' + str(d.interval))
+	print('value is ' + str(d.value()))
+#print(help(dummy))
