@@ -1,3 +1,4 @@
+
 #example from https://stackoverflow.com/questions/5279641/need-help-creating-a-tcp-relay-between-two-sockets
 #adding a bunch of debug stuff
 import asyncore
@@ -8,7 +9,7 @@ class User(asyncore.dispatcher_with_send):
     def __init__(self, sock, server):
         asyncore.dispatcher_with_send.__init__(self, sock)
         self.server = server
-        print 'user __init__'
+        print('user __init__')
 
     def handle_read(self):
         data = self.recv(4096)
@@ -16,16 +17,16 @@ class User(asyncore.dispatcher_with_send):
         # if authenticated, send data to server
         if self.server:
             self.server.send(data)
-            print 'User: ' + data.decode("utf-8")
+            print ('User: ' + data.decode("utf-8"))
         else:
-            print 'in handle read but not self.server'
-            print 'data = '  + data.decode("utf-8")
+            print( 'in handle read but not self.server')
+            print( 'data = '  + data.decode("utf-8"))
 
     def handle_close(self):
         if self.server:
             self.server.close()
         self.close()
-        print 'handle_close'
+        print( 'handle_close')
 
 class Listener(asyncore.dispatcher_with_send):
     #TODO accept from multiple clients and ports
@@ -37,7 +38,7 @@ class Listener(asyncore.dispatcher_with_send):
         self.set_reuse_addr()
         self.bind(listener_addr)
         self.listen(1)
-        print 'listener __init__  listener_addr = ' + listener_addr[0]
+        print( 'listener __init__  listener_addr = ' + listener_addr[0])
 
     def handle_accept(self):
         conn, addr = self.accept()
@@ -45,9 +46,9 @@ class Listener(asyncore.dispatcher_with_send):
         # it will reject all other clients.
         if not self.server.user:
             self.server.user = User(conn, self.server)
-            print 'self.server.user'
+            print( 'self.server.user')
         else:
-            print 'Not self.server.listenter'
+            print ('Not self.server.listenter')
             conn.close()
 
 class Server(asyncore.dispatcher_with_send):
@@ -58,15 +59,15 @@ class Server(asyncore.dispatcher_with_send):
         self.listener_addr = listener_addr
         self.listener = None
         self.user = None
-        print 'Server __init__ listener_addr = ' + listener_addr[0]   + 'server_addr = ' + server_addr[0]
-        
+        print ('Server __init__ listener_addr = ' + listener_addr[0]   + 'server_addr = ' + server_addr[0])
+
     def start(self):
         self.create_socket(socket.AF_INET, socket.SOCK_STREAM)
         self.connect(self.server_addr)
-        print 'start'
+        print ('start')
     def handle_error(self, *n):
         self.close()
-        print 'error handled'
+        print( 'error handled')
 
     def handle_read(self):
         data = self.recv(4096)
@@ -76,18 +77,18 @@ class Server(asyncore.dispatcher_with_send):
         # if user is attached, send data
         elif self.user:
             self.user.send(data)
-            print 'Server: ' + data.decode("utf-8")
+            print ('Server: ' + data.decode("utf-8"))
 
     def handle_close(self):
         if self.user:
             self.user.server = None
             self.user.close()
             self.user = None
-            print 'self.user closed'
+            print( 'self.user closed')
         if self.listener:
             self.listener.close()
             self.listener = None
-            print 'self.listener closed'
+            print ('self.listener closed')
         self.close()
         self.start()
 
