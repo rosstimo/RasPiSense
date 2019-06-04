@@ -1,3 +1,4 @@
+#!/usr/bin/python3.7.2
 #Packet sniffer in python
 #For Linux - Sniffs all incoming and outgoing packets :)
 #Silver Moon (m00n.silv3r@gmail.com)
@@ -16,7 +17,7 @@ def eth_addr (a) :
 		  MAC += ':'
 	#print MAC
 	return MAC
-  
+
 def hData (d) :
 	dataLength = len(d)
 	hexData = '\n'
@@ -35,7 +36,7 @@ def hData (d) :
 			columnNum = 0
 	#print hexData + '\n'
 	return hexData
-	
+
 def rawData (d):
 	dataLength = len(d)
 	rawData = '\n'
@@ -50,7 +51,7 @@ def rawData (d):
 	#print rawData + '\n'
 	return rawData
 
-	
+
 #create a AF_PACKET type raw socket (thats basically packet level)
 #define ETH_P_ALL    0x0003          /* Every packet (be careful!!!) */
 try:
@@ -84,7 +85,7 @@ while True:
 		iph = unpack('!BBHHHBBH4s4s' , ip_header)
 		version_ihl = iph[0]
 		version = version_ihl >> 4
-		ihl = version_ihl & 0xf 
+		ihl = version_ihl & 0xf
 		iph_length = ihl * 4
 		#print str(iph_length)
 		ttl = iph[5]
@@ -94,9 +95,9 @@ while True:
 		#print s_addr, d_addr
 		if d_addr == '127.0.0.1':
 			#print 'Destination MAC : ' + str(eth_addr(packet[0:6])) + ' Source MAC : ' + str(eth_addr(packet[6:12])) + ' Protocol : ' + str(eth_protocol)
-			#print 'Version : ' + str(version) + ' IP Header Length : ' + str(ihl) + ' TTL : ' + str(ttl) + ' Protocol : ' + str(protocol) 
+			#print 'Version : ' + str(version) + ' IP Header Length : ' + str(ihl) + ' TTL : ' + str(ttl) + ' Protocol : ' + str(protocol)
 			#print ' Source Address : ' + str(s_addr) + ' Destination Address : ' + str(d_addr)
-			
+
 			#TCP protocol
 			if protocol == 6 :
 				t = iph_length + eth_length
@@ -122,11 +123,11 @@ while True:
 					if len(data) > 0:
 						print '*******************************'
 						print 'Destination MAC : ' + str(eth_addr(packet[0:6])) + ' Source MAC : ' + str(eth_addr(packet[6:12])) + ' Protocol : ' + str(eth_protocol)
-						print 'Version : ' + str(version) + ' IP Header Length : ' + str(ihl) + ' TTL : ' + str(ttl) + ' Protocol : ' + str(protocol) 
+						print 'Version : ' + str(version) + ' IP Header Length : ' + str(ihl) + ' TTL : ' + str(ttl) + ' Protocol : ' + str(protocol)
 						print 'Source Address : ' + str(s_addr) + ' Destination Address : ' + str(d_addr)
 						print 'Source Port : ' + str(source_port) + ' Dest Port : ' + str(dest_port)
 						print 'Sequence Number : ' + str(sequence) + ' Acknowledgement : ' + str(acknowledgement) + ' TCP header length : ' + str(tcph_length)
-						print 'Data : '  + hData(data) + rawData(data)	
+						print 'Data : '  + hData(data) + rawData(data)
 						print len(data)
 						print '*******************************'
 					#break
@@ -151,7 +152,7 @@ while True:
 				#get data from the packet
 				data = packet[h_size:]
 
-				print 'Data : ' + hData(data) + rawData(data)	
+				print 'Data : ' + hData(data) + rawData(data)
 
 			#UDP packets
 			elif protocol == 17 :
@@ -174,11 +175,10 @@ while True:
 					#get data from the packet
 					data = packet[h_size:]
 
-					print 'Data : ' + hData(data) + rawData(data)	
+					print 'Data : ' + hData(data) + rawData(data)
 
 			#some other IP packet like IGMP
 			else :
 				print str(protocol) + ' Protocol other than TCP/UDP/ICMP'
-				
+
 			#print
-			
