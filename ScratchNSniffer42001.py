@@ -91,9 +91,9 @@ while True:
 		protocol = iph[6]
 		s_addr = socket.inet_ntoa(iph[8]);
 		d_addr = socket.inet_ntoa(iph[9]);
-		print s_addr, d_addr
-		if d_addr == '127.0.0.1':
-		#if True:
+		#print s_addr, d_addr
+		#if d_addr == '127.0.0.1':
+		if True:
 			#print 'Destination MAC : ' + str(eth_addr(packet[0:6])) + ' Source MAC : ' + str(eth_addr(packet[6:12])) + ' Protocol : ' + str(eth_protocol)
 			#print 'Version : ' + str(version) + ' IP Header Length : ' + str(ihl) + ' TTL : ' + str(ttl) + ' Protocol : ' + str(protocol) 
 			#print ' Source Address : ' + str(s_addr) + ' Destination Address : ' + str(d_addr)
@@ -117,19 +117,20 @@ while True:
 					data_size = len(packet) - h_size
 					#get data from the packet
 					data = packet[h_size:]
-					if len(data) > 0 : 
-						#if dest_port == 8888 or dest_port == 42001 or dest_port == 42002 or source_port == 8888 or source_port == 42001 or source_port == 42002:
-						print '***********TCP protocol********************'
-						print 'Destination MAC : ' + str(eth_addr(packet[0:6])) + ' Source MAC : ' + str(eth_addr(packet[6:12])) + ' Protocol : ' + str(eth_protocol)
-						print 'Version : ' + str(version) + ' IP Header Length : ' + str(ihl) + ' TTL : ' + str(ttl) + ' Protocol : ' + str(protocol) 
-						print 'Source Address : ' + str(s_addr) + ' Destination Address : ' + str(d_addr)
-						print 'Source Port : ' + str(source_port) + ' Dest Port : ' + str(dest_port)
-						print 'Sequence Number : ' + str(sequence) + ' Acknowledgement : ' + str(acknowledgement) + ' TCP header length : ' + str(tcph_length)
-						print 'Data: '  
-						print 'Hex: ' + hData(data) 
-						print 'Raw: ' + rawData(data)	
-						print 'Number of Bytes: ' + str(len(data))
-						print '*******************************'
+					if len(data) > 0 :
+					#if True:
+						if dest_port == 42001 or source_port == 42001: #dest_port == 42001 or dest_port == 42002 or source_port == 8888 or source_port == 42001 or source_port == 42002:
+							print '***********TCP protocol********************'
+							print 'Destination MAC : ' + str(eth_addr(packet[0:6])) + ' Source MAC : ' + str(eth_addr(packet[6:12])) + ' Protocol : ' + str(eth_protocol)
+							print 'Version : ' + str(version) + ' IP Header Length : ' + str(ihl) + ' TTL : ' + str(ttl) + ' Protocol : ' + str(protocol) 
+							print 'Source Address : ' + str(s_addr) + ' Destination Address : ' + str(d_addr)
+							print 'Source Port : ' + str(source_port) + ' Dest Port : ' + str(dest_port)
+							print 'Sequence Number : ' + str(sequence) + ' Acknowledgement : ' + str(acknowledgement) + ' TCP header length : ' + str(tcph_length)
+							print 'Data: '  
+							print 'Hex: ' + hData(data) 
+							print 'Raw: ' + rawData(data)	
+							print 'Number of Bytes: ' + str(len(data))
+							print '*******************************'
 					#break
 
 			#ICMP Packets

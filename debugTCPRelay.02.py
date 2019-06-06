@@ -7,11 +7,13 @@ import socket
 class User(asyncore.dispatcher_with_send):
 
     def __init__(self, sock, server):
+        print('user __init__')
         asyncore.dispatcher_with_send.__init__(self, sock)
         self.server = server
-        print('user __init__')
+        
 
     def handle_read(self):
+        print('handle_read')
         data = self.recv(4096)
         # parse User auth protocol here, authenticate, set phase flag, etc.
         # if authenticated, send data to server
@@ -23,15 +25,17 @@ class User(asyncore.dispatcher_with_send):
             print( 'data = '  + data.decode("utf-8"))
 
     def handle_close(self):
+        print('handle_close')
         if self.server:
             self.server.close()
         self.close()
-        print( 'handle_close')
+        
 
 class Listener(asyncore.dispatcher_with_send):
     #TODO accept from multiple clients and ports
     #create relay funnel to scratch
     def __init__(self, listener_addr, server):
+        print('Listener __init__')
         asyncore.dispatcher_with_send.__init__(self)
         self.server = server
         self.create_socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -41,6 +45,7 @@ class Listener(asyncore.dispatcher_with_send):
         print( 'listener __init__  listener_addr = ' + listener_addr[0])
 
     def handle_accept(self):
+        print('handle_accept')
         conn, addr = self.accept()
         # this listener only accepts 1 client. while it is serving 1 client
         # it will reject all other clients.
@@ -54,22 +59,28 @@ class Listener(asyncore.dispatcher_with_send):
 class Server(asyncore.dispatcher_with_send):
 
     def __init__(self, server_addr, listener_addr):
+        print('Server __init__')
         asyncore.dispatcher_with_send.__init__(self)
         self.server_addr = server_addr
         self.listener_addr = listener_addr
         self.listener = None
         self.user = None
-        print ('Server __init__ listener_addr = ' + listener_addr[0]   + 'server_addr = ' + server_addr[0])
+        print('Server __init__ listener_addr = ' + listener_addr[0]   + 'server_addr = ' + server_addr[0])
 
     def start(self):
+        print('start')
         self.create_socket(socket.AF_INET, socket.SOCK_STREAM)
         self.connect(self.server_addr)
-        print ('start')
+        print('start')
+        
     def handle_error(self, *n):
-        self.close()
-        print( 'error handled')
+        print('error handled')
+        print(n)
+        #self.close()
+        
 
     def handle_read(self):
+        print('handle_read')
         data = self.recv(4096)
         # parse SomeServer auth protocol here, set phase flag, etc.
         if not self.listener:
@@ -80,6 +91,7 @@ class Server(asyncore.dispatcher_with_send):
             print ('Server: ' + data.decode("utf-8"))
 
     def handle_close(self):
+        print('handle_close')
         if self.user:
             self.user.server = None
             self.user.close()
@@ -94,5 +106,6 @@ class Server(asyncore.dispatcher_with_send):
 
 if __name__ == '__main__':
     app = Server(('127.0.0.1', 42001), ('localhost',42002))
+    print 'hello'
     app.start()
     asyncore.loop()
