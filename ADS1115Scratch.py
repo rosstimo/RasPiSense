@@ -35,7 +35,7 @@ while True:
 	A3.sendUpdate()
 	
 	
-	time.sleep(0.5)
+	time.sleep(0.2)
 if __name__ == '__main__' :
 				
 				print('Reading ADS1x15 values, press Ctrl-C to quit...')
