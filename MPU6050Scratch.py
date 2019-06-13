@@ -7,10 +7,10 @@
 import SensorUpdateScratch
 import sys
 import time
-import mpu6050
-
+#import mpu6050
+from mpu6050 import mpu6050
 #create instance set I2C address
-mpu = mpu6050.mpu6050(0x68)
+mpu = mpu6050(0x68)
 accel_data = mpu.get_accel_data()
 gyro_data = mpu.get_gyro_data()
 
@@ -32,15 +32,23 @@ while True:
 	
 	mpu_temp.sendUpdate()
 	accel_data = mpu.get_accel_data()
+	gyro_data = mpu.get_gyro_data()
+	
+	accel_x.sensorValue = accel_data['x']
+	accel_y.sensorValue = accel_data['y']
+	accel_z.sensorValue = accel_data['z']
+	gyro_x.sensorValue = gyro_data['x']
+	gyro_y.sensorValue = gyro_data['y']
+	gyro_z.sensorValue = gyro_data['z']
+	
 	accel_x.sendUpdate()
 	accel_y.sendUpdate()
 	accel_z.sendUpdate()
-	gyro_data = mpu.get_gyro_data()
 	gyro_x.sendUpdate()
 	gyro_y.sendUpdate()
 	gyro_z.sendUpdate()
 	
-	time.sleep(0.1)
+	time.sleep(.1)
 
 if __name__ == '__main__' :
 	
@@ -53,7 +61,5 @@ if __name__ == '__main__' :
 	print(gyro_data['x'])
 	print(gyro_data['y'])
 	print(gyro_data['z'])
-	while True:
-		accel_data = mpu.get_accel_data()
-		print(accel_data)
+	
 				
