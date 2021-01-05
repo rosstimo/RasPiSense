@@ -106,6 +106,6 @@ class Server(asyncore.dispatcher_with_send):
 
 if __name__ == '__main__':
     app = Server(('127.0.0.1', 42001), ('localhost',42002))
-    print 'hello'
+    print ('hello')
     app.start()
     asyncore.loop()
